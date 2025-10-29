@@ -36,14 +36,15 @@ resource "random_password" "root_password" {
   min_special = 1
 }
 
-module "db-secrets" {
-  source     = "GoogleCloudPlatform/secret-manager/google"
-  version    = "~> 0.9"
-  project_id = local.project_id
-  secrets = [
-    {
-      name        = "/sandbox/${local.name}/${var.environment}/root-password"
-      secret_data = random_password.root_password.result
-    }
-  ]
+resource "google_parameter_manager_parameter" "db_params" {
+  parameter_id = local.name
+  format = "JSON"
+}
+
+resource "google_parameter_manager_parameter_version" "db_params_version" {
+  parameter = google_parameter_manager_parameter.parameter-basic.id
+  parameter_version_id = var.environment
+  parameter_data = jsonencode({
+    "rootPassword": random_password.root_password.result
+  })
 }
