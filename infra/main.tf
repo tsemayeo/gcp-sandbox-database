@@ -4,27 +4,23 @@ locals {
   region     = "us-east1"
 }
 
-# refer to https://github.com/terraform-google-modules/terraform-google-sql-db/blob/main/examples/mysql-ha/main.tf
-# to see example high availability configuration
-module "db-cluster" {
-  source     = "GoogleCloudPlatform/sql-db/google//modules/mysql"
-  version    = "26.0"
-  project_id = local.project_id
+resource "google_sql_database_instance" "db_master_instance" {
+  name             = "${local.name}-master-instance-${var.environment}"
+  database_version = "MYSQL_8_4"
+  region           = local.region
 
-  # basic instance settings
-  name              = "${local.name}-instance-${var.environment}"
-  database_version  = "MYSQL_8_4"
-  activation_policy = "NEVER"
-  tier              = "db-f1-micro"
-  edition           = "ENTERPRISE"
-  availability_type = "REGIONAL"
-  region = local.region
-
-  # datbase settings
+  settings {
+    # Second-generation instance tiers are based on the machine
+    # type. See argument reference below.
+    tier = "db-f1-micro"
+    availability_type = "ZONAL"
+    activation_policy = "NEVER"
+    backup_configuration {
+      binary_log_enabled = true
+    }
+  }
   root_password = random_password.root_password.result
-  db_name       = "sandbox"
-  db_charset    = "utf8mb4"
-  db_collation  = "utf8mb4_general_ci"
+  deletion_protection = false
 }
 
 
@@ -38,13 +34,13 @@ resource "random_password" "root_password" {
 
 resource "google_parameter_manager_parameter" "db_params" {
   parameter_id = local.name
-  format = "JSON"
+  format       = "JSON"
 }
 
 resource "google_parameter_manager_parameter_version" "db_params_version" {
-  parameter = google_parameter_manager_parameter.db_params.id
+  parameter            = google_parameter_manager_parameter.db_params.id
   parameter_version_id = var.environment
   parameter_data = jsonencode({
-    "rootPassword": random_password.root_password.result
+    "rootPassword" : random_password.root_password.result
   })
 }
