@@ -42,7 +42,7 @@ resource "google_parameter_manager_parameter" "db_params" {
 }
 
 resource "google_parameter_manager_parameter_version" "db_params_version" {
-  parameter = google_parameter_manager_parameter.parameter-basic.id
+  parameter = google_parameter_manager_parameter.db_params.id
   parameter_version_id = var.environment
   parameter_data = jsonencode({
     "rootPassword": random_password.root_password.result
