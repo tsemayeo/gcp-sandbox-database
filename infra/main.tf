@@ -14,7 +14,7 @@ module "db-cluster" {
   # basic instance settings
   name              = "${local.name}-instance-${var.environment}"
   database_version  = "MYSQL_8_4"
-  activation_policy = "ON_DEMAND"
+  activation_policy = "NEVER"
   tier              = "db-f1-micro"
   edition           = "ENTERPRISE"
   availability_type = "REGIONAL"
