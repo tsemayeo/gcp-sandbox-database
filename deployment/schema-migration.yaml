@@ -13,6 +13,7 @@ steps:
   id: 'setup-extract-parameters'
   script: |
     echo $(ls -a)
+    echo $(cat /workspace/parameters-base64.json)
     echo $(jq '.payload.data | @base64d | fromjson' /workspace/parameters-base64.json) \
       > /workspace/parameters.json
     echo $(cat /workspace/parameters.json)
