@@ -1,0 +1,44 @@
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: 'setup-get-parameters-base64'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    PARAMETERS_BASE64=$(gcloud parametermanager parameters versions render _ENVIRONMENT --parameter=_PROJECT_NAME --location=global --format=json')
+    echo "Retrieved parameter values: $PARAMETERS_BASE64"
+
+    # save for next steps
+    echo "$PARAMETERS_BASE64" > /workspace/parameters-base64.json
+
+- name: 'ghcr.io/jqlang/jq:latest'
+  id: 'setup-extract-parameters'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    PARAMETERS_JSON=$(jq '.payload.data | @base64d | fromjson' parameters-base64.json)
+    echo "Extracted parameters JSON: $PARAMETERS_JSON"
+
+
+- name: 'liquibase/liquibase:5.0'
+  id: 'run-schema-migration'
+  entrypoint: "bash"
+  args:
+    - "-c"
+    - |
+      # Install Liquibase
+
+      # Execute sync script
+      liquibase --version
+  env:
+    - 'LIQUIBASE_COMMAND_URL=$(DB_HOST)'
+    - 'LIQUIBASE_COMMAND_DEFAULT_SCHEMA_NAME=$(DB_NAME)'
+    - 'LIQUIBASE_COMMAND_USERNAME=$(DB_USER)'
+    - 'LIQUIBASE_COMMAND_PASSWORD=$(DB_PASSWORD)'
+    - 'INSTALL_MYSQL=true'
+substitutions:
+  _PROJECT_NAME: sandbox-database # default value
+  _ENVIRONMENT: dev # default value
+options:
+  logging: CLOUD_LOGGING_ONLY
