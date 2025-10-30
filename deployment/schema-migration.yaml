@@ -5,11 +5,11 @@ steps:
   args:
   - '-c'
   - |
-    PARAMETERS_BASE64=$(gcloud parametermanager parameters versions render _ENVIRONMENT --parameter=_PROJECT_NAME --location=global --format=json')
-    echo "Retrieved parameter values: $PARAMETERS_BASE64"
-
     # save for next steps
-    echo "$$PARAMETERS_BASE64" > /workspace/parameters-base64.json
+    echo $(gcloud parametermanager parameters versions render _ENVIRONMENT --parameter=_PROJECT_NAME --location=global --format=json') \
+      > /workspace/parameters-base64.json
+
+    echo $(cat /workspace/parameters-base64.json)
 
 - name: 'ghcr.io/jqlang/jq:latest'
   id: 'setup-extract-parameters'
@@ -18,8 +18,9 @@ steps:
   - '-c'
   - |
     echo $(ls -a)
-    PARAMETERS_JSON=$(jq '.payload.data | @base64d | fromjson' /workspace/parameters-base64.json)
-    echo "Extracted parameters JSON: $PARAMETERS_JSON"
+    echo $(jq '.payload.data | @base64d | fromjson' /workspace/parameters-base64.json) \
+      > /workspace/parameters.json
+    echo $(cat /workspace/parameters.json)
 
 
 - name: 'liquibase/liquibase:5.0'
