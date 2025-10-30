@@ -5,19 +5,15 @@ steps:
     # save for next steps
     echo $(gcloud parametermanager parameters versions render $_ENVIRONMENT --parameter=$_PROJECT_NAME --location=global --format=json) \
       > /workspace/parameters-base64.json
-
-    echo $(cat /workspace/parameters-base64.json)
   automapSubstitutions: true
 
 - name: 'jetbrainsinfra/jq'
   id: 'setup-extract-parameters'
   script: |
-    echo $(ls -a)
-    echo $(cat /workspace/parameters-base64.json)
     echo $(jq '.payload.data | @base64d | fromjson' /workspace/parameters-base64.json) \
       > /workspace/parameters.json
     echo $(cat /workspace/parameters.json)
-
+    
 
 - name: 'liquibase/liquibase:5.0'
   id: 'run-schema-migration'

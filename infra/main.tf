@@ -15,6 +15,14 @@ resource "google_sql_database_instance" "db_master_instance" {
     tier              = "db-f1-micro"
     edition           = "ENTERPRISE"
     availability_type = "ZONAL"
+    
+    ip_configuration {
+      ipv4_enabled = true
+      authorized_networks {
+        name  = "allow-all"
+        value = "0.0.0.0/0"  # WARNING: This allows all IPs - replace with your specific IP for production
+      }
+    }
   }
   root_password       = random_password.root_password.result
   deletion_protection = false
@@ -39,5 +47,8 @@ resource "google_parameter_manager_parameter_version" "db_params_version" {
   parameter_version_id = var.environment
   parameter_data = jsonencode({
     "rootPassword" : random_password.root_password.result
+    "host": google_sql_database_instance.db_master_instance.public_ip_address
+    "rootUsername" : "root"
+    "port": "3306"
   })
 }
