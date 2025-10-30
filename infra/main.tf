@@ -2,8 +2,10 @@ locals {
   # values that could be moved to variables
   name           = "sandbox-database"
   default_schema = "sandbox"
+  liquibase_schema = "liquibase"
   project_id     = "tsemaye-sandbox"
   region         = "us-east1"
+  port           = 3306
 
   # hard coded values should be a part of module
   users = {
@@ -15,20 +17,20 @@ locals {
           privileges = ["ALL"]
         },
         {
-          database   = "liquibase"
+          database   = local.liquibase_schema
           privileges = ["ALL"]
         }
       ]
     }
     liquibase = {
-      name = "liquibase"
+      name = local.liquibase_schema
       database_grants = [
         {
           database   = "sandbox"
           privileges = ["ALL"]
         },
         {
-          database   = "liquibase"
+          database   = local.liquibase_schema
           privileges = ["ALL"]
         }
       ]
@@ -75,7 +77,7 @@ resource "google_sql_database" "default_schema" {
 }
 
 resource "google_sql_database" "liquibase_schema" {
-  name     = "liquibase"
+  name     = local.liquibase_schema
   instance = google_sql_database_instance.db_master_instance.name
 }
 
@@ -100,8 +102,11 @@ resource "google_parameter_manager_parameter_version" "db_params_version" {
     {
       "rootUsername" : "root"
       "rootPassword" : random_password.root_password.result
-      "host" : google_sql_database_instance.db_master_instance.public_ip_address
-      "port" : "3306"
+      "defaultSchema" : local.default_schema
+      "liquibaseSchema" : local.liquibase_schema
+      "publicIP": google_sql_database_instance.db_master_instance.public_ip_address
+      "host" : "jdbc:mysql://${google_sql_database_instance.db_master_instance.public_ip_address}:${local.port}/${local.default_schema}"
+      "port" : local.port
     },
     {
       for user_key, user in module.users :
