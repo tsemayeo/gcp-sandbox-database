@@ -1,7 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   id: 'setup-get-parameters-base64'
-  entrypoint: 'bash'
   script: |
     # save for next steps
     echo $(gcloud parametermanager parameters versions render _ENVIRONMENT --parameter=_PROJECT_NAME --location=global --format=json') \
@@ -11,7 +10,6 @@ steps:
 
 - name: 'ghcr.io/jqlang/jq:latest'
   id: 'setup-extract-parameters'
-  entrypoint: 'bash'
   script: |
     echo $(ls -a)
     echo $(jq '.payload.data | @base64d | fromjson' /workspace/parameters-base64.json) \
@@ -21,7 +19,6 @@ steps:
 
 - name: 'liquibase/liquibase:5.0'
   id: 'run-schema-migration'
-  entrypoint: "bash"
   script: |
     # Install Liquibase
 
