@@ -9,18 +9,14 @@ steps:
     echo $(cat /workspace/parameters-base64.json)
   automapSubstitutions: true
 
-
-- name: 'ghcr.io/jqlang/jq:latest'
+- name: 'jetbrainsinfra/jq'
   id: 'setup-extract-parameters'
-  entrypoint: 'bash'
-  args:
-    - '-c'
-    - |
-      echo $(ls -a)
-      echo $(cat /workspace/parameters-base64.json)
-      echo $(jq '.payload.data | @base64d | fromjson' /workspace/parameters-base64.json) \
-        > /workspace/parameters.json
-      echo $(cat /workspace/parameters.json)
+  script: |
+    echo $(ls -a)
+    echo $(cat /workspace/parameters-base64.json)
+    echo $(jq '.payload.data | @base64d | fromjson' /workspace/parameters-base64.json) \
+      > /workspace/parameters.json
+    echo $(cat /workspace/parameters.json)
 
 
 - name: 'liquibase/liquibase:5.0'
