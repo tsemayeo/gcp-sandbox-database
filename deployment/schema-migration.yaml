@@ -9,7 +9,7 @@ steps:
     echo "Retrieved parameter values: $PARAMETERS_BASE64"
 
     # save for next steps
-    echo "$PARAMETERS_BASE64" > /workspace/parameters-base64.json
+    echo "$$PARAMETERS_BASE64" > /workspace/parameters-base64.json
 
 - name: 'ghcr.io/jqlang/jq:latest'
   id: 'setup-extract-parameters'
@@ -17,7 +17,8 @@ steps:
   args:
   - '-c'
   - |
-    PARAMETERS_JSON=$(jq '.payload.data | @base64d | fromjson' parameters-base64.json)
+    echo $(ls -a)
+    PARAMETERS_JSON=$(jq '.payload.data | @base64d | fromjson' /workspace/parameters-base64.json)
     echo "Extracted parameters JSON: $PARAMETERS_JSON"
 
 
