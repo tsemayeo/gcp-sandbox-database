@@ -20,12 +20,13 @@ steps:
     echo "export LIQUIBASE_COMMAND_DEFAULT_SCHEMA_NAME=$(jq -r '.defaultSchema' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
     echo "export LIQUIBASE_COMMAND_USERNAME=$(jq -r '.liquibaseUsername' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
     echo "export LIQUIBASE_COMMAND_PASSWORD=$(jq -r '.liquibasePassword' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
-    echo "export INSTALL_MYSQL=true" >> /workspace/env/liquibase_env.sh
     echo "export LIQUIBASE_LIQUIBASE_SCHEMA_NAME=$(jq -r '.liquibaseSchema' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
     
 
 - name: 'liquibase/liquibase:5.0'
   id: 'run-schema-migration'
+  env:
+    - 'INSTALL_MYSQL=true'
   script: |
     # Install Liquibase
 
