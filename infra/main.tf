@@ -12,14 +12,11 @@ resource "google_sql_database_instance" "db_master_instance" {
   settings {
     # Second-generation instance tiers are based on the machine
     # type. See argument reference below.
-    tier = "db-f1-micro"
+    tier              = "db-f1-micro"
+    edition           = "ENTERPRISE"
     availability_type = "ZONAL"
-    activation_policy = "NEVER"
-    backup_configuration {
-      binary_log_enabled = true
-    }
   }
-  root_password = random_password.root_password.result
+  root_password       = random_password.root_password.result
   deletion_protection = false
 }
 
