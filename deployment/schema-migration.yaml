@@ -25,11 +25,8 @@ steps:
 
 - name: 'liquibase/liquibase:5.0'
   id: 'run-schema-migration'
-  env:
-    - 'INSTALL_MYSQL=true'
   script: |
-    # Install Liquibase
-
+  
     # Export Liquibase environment variables
     set -a
     . /workspace/env/liquibase_env.sh
@@ -37,6 +34,7 @@ steps:
 
     # Execute sync script
     liquibase --version
+    lpm add mysql
     liquibase --changeLogFile=/workspace/code/src/main/changelogs/00-changelog-root.yaml status
 
 substitutions:
