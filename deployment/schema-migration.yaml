@@ -31,7 +31,7 @@ steps:
 
     # Export Liquibase environment variables
     set -a
-    source /workspace/env/liquibase_env.sh
+    . /workspace/env/liquibase_env.sh
     set +a
 
     # Execute sync script
