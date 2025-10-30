@@ -3,7 +3,7 @@ steps:
   id: 'setup-get-parameters-base64'
   script: |
     # save for next steps
-    echo $(gcloud parametermanager parameters versions render _ENVIRONMENT --parameter=_PROJECT_NAME --location=global --format=json) \
+    echo $(gcloud parametermanager parameters versions render $_ENVIRONMENT --parameter=$_PROJECT_NAME --location=global --format=json) \
       > /workspace/parameters-base64.json
 
     echo $(cat /workspace/parameters-base64.json)
