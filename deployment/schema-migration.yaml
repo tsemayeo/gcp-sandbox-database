@@ -35,7 +35,8 @@ steps:
     # Execute sync script
     liquibase --version
     lpm add mysql
-    liquibase --changeLogFile=/src/main/changelogs/00-changelog-root.yaml status
+    lpm list
+    liquibase --changeLogFile=src/main/changelogs/00-changelog-root.yaml status
 
 substitutions:
   _PROJECT_NAME: sandbox-database # default value
