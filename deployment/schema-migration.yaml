@@ -34,7 +34,7 @@ steps:
 
     # Execute sync script
     liquibase --version
-    lpm add mysql
+    lpm add mysql --global
     echo "Installed Liquibase plugins:"
     echo $(ls -a)
     echo $(ls /liquibase_libs)
