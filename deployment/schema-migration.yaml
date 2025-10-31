@@ -35,7 +35,9 @@ steps:
     # Execute sync script
     liquibase --version
     lpm add mysql
-    echo $(tree .)
+    echo "Installed Liquibase plugins:"
+    echo $(ls -a)
+    echo $(ls /liquibase_libs)
     echo $(lpm list)
     liquibase --changeLogFile=src/main/changelogs/00-changelog-root.yaml status
 
