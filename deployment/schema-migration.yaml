@@ -35,7 +35,8 @@ steps:
     # Execute sync script
     liquibase --version
     lpm add mysql
-    lpm list
+    echo $(tree .)
+    echo $(lpm list)
     liquibase --changeLogFile=src/main/changelogs/00-changelog-root.yaml status
 
 substitutions:
