@@ -1,4 +1,9 @@
 terraform {
+  backend "gcs" {
+    bucket = "tsemaye-sandbox-terraform-state"
+    prefix = "sandbox-database/dev"
+  }
+
   required_providers {
     google = {
       source  = "hashicorp/google"

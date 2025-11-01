@@ -1,10 +1,4 @@
 locals {
-  # values that could be moved to variables
-  name           = "sandbox-database"
-  default_schema = "sandbox"
-  liquibase_schema = "liquibase"
-  project_id     = "tsemaye-sandbox"
-  region         = "us-east1"
   port           = 3306
 
   # hard coded values should be a part of module
@@ -17,20 +11,20 @@ locals {
           privileges = ["ALL"]
         },
         {
-          database   = local.liquibase_schema
+          database   = var.liquibase_schema
           privileges = ["ALL"]
         }
       ]
     }
     liquibase = {
-      name = local.liquibase_schema
+      name = var.liquibase_schema
       database_grants = [
         {
           database   = "sandbox"
           privileges = ["ALL"]
         },
         {
-          database   = local.liquibase_schema
+          database   = var.liquibase_schema
           privileges = ["ALL"]
         }
       ]
@@ -39,9 +33,9 @@ locals {
 }
 
 resource "google_sql_database_instance" "db_master_instance" {
-  name             = "${local.name}-master-instance-${var.environment}"
+  name             = "${var.project_name}-master-instance-${var.environment}"
   database_version = "MYSQL_8_4"
-  region           = local.region
+  region           = var.region
 
   settings {
     tier              = "db-f1-micro"
@@ -72,12 +66,12 @@ resource "random_password" "root_password" {
 }
 
 resource "google_sql_database" "default_schema" {
-  name     = local.default_schema
+  name     = var.default_schema
   instance = google_sql_database_instance.db_master_instance.name
 }
 
 resource "google_sql_database" "liquibase_schema" {
-  name     = local.liquibase_schema
+  name     = var.liquibase_schema
   instance = google_sql_database_instance.db_master_instance.name
 }
 
@@ -91,7 +85,7 @@ module "users" {
 }
 
 resource "google_parameter_manager_parameter" "db_params" {
-  parameter_id = local.name
+  parameter_id = var.project_name
   format       = "JSON"
 }
 
@@ -102,10 +96,10 @@ resource "google_parameter_manager_parameter_version" "db_params_version" {
     {
       "rootUsername" : "root"
       "rootPassword" : random_password.root_password.result
-      "defaultSchema" : local.default_schema
-      "liquibaseSchema" : local.liquibase_schema
+      "defaultSchema" : var.default_schema
+      "liquibaseSchema" : var.liquibase_schema
       "publicIP": google_sql_database_instance.db_master_instance.public_ip_address
-      "host" : "jdbc:mysql://${google_sql_database_instance.db_master_instance.public_ip_address}:${local.port}/${local.default_schema}"
+      "host" : "jdbc:mysql://${google_sql_database_instance.db_master_instance.public_ip_address}:${local.port}/${var.default_schema}"
       "port" : local.port
     },
     {
