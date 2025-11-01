@@ -21,4 +21,4 @@ TF_VAR_default_schema = "sandbox"
 TF_VAR_liquibase_schema = "liquibase"
 
 [tools]
-terraform
+terraform = "1.13.4"

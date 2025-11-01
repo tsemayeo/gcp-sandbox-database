@@ -1,13 +1,11 @@
 locals {
   port           = 3306
-
-  # hard coded values should be a part of module
   users = {
     admin = {
       name = "admin"
       database_grants = [
         {
-          database   = "sandbox"
+          database   = var.default_schema
           privileges = ["ALL"]
         },
         {
@@ -20,7 +18,7 @@ locals {
       name = var.liquibase_schema
       database_grants = [
         {
-          database   = "sandbox"
+          database   = var.default_schema
           privileges = ["ALL"]
         },
         {
@@ -41,6 +39,7 @@ resource "google_sql_database_instance" "db_master_instance" {
     tier              = "db-f1-micro"
     edition           = "ENTERPRISE"
     availability_type = "ZONAL"
+    activation_policy = "NEVER"
 
     # eventually move to private access
     ip_configuration {
@@ -98,6 +97,7 @@ resource "google_parameter_manager_parameter_version" "db_params_version" {
       "rootPassword" : random_password.root_password.result
       "defaultSchema" : var.default_schema
       "liquibaseSchema" : var.liquibase_schema
+      "privateIP": google_sql_database_instance.db_master_instance.private_ip_address
       "publicIP": google_sql_database_instance.db_master_instance.public_ip_address
       "host" : "jdbc:mysql://${google_sql_database_instance.db_master_instance.public_ip_address}:${local.port}/${var.default_schema}"
       "port" : local.port
