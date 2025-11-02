@@ -5,7 +5,7 @@ steps:
   args:
     - -c
     - |
-      wget -O /workspace/cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/2.19.0
+      wget -O /workspace/cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.19.0/cloud-sql-proxy.linux.amd64
       chmod +x /workspace/cloud-sql-proxy
 
 - name: 'gcr.io/cloud-builders/gcloud'
@@ -22,7 +22,6 @@ steps:
   script: |
     echo $(jq '.payload.data | @base64d | fromjson' /workspace/env/parameters-base64.json) \
       > /workspace/env/parameters.json
-    echo $(cat /workspace/env/parameters.json)
 
     # Write Liquibase env vars to bash profile
     echo "export INSTANCE_CONNECTION_NAME=$(jq -r '.instanceConnectionName' /workspace/env/parameters.json)" > /workspace/env/liquibase_env.sh
