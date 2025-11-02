@@ -44,10 +44,6 @@ resource "google_sql_database_instance" "db_master_instance" {
     # eventually move to private access
     ip_configuration {
       ipv4_enabled = true
-      authorized_networks {
-        name  = "allow-all"
-        value = "0.0.0.0/0" # WARNING: This allows all IPs - replace with your specific IP for production
-      }
     }
   }
   root_password       = random_password.root_password.result
