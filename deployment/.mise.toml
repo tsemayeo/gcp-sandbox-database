@@ -1,6 +1,7 @@
 [env]
 _PROJECT_NAME = "{{ env.PROJECT_NAME }}"
 _ENVIRONMENT = "{{ env.ENVIRONMENT }}"
+_CLOUD_PROXY_PORT = "3306"
 
 [tools]
 gcloud = "latest"
