@@ -42,7 +42,7 @@ steps:
     set +a
 
     # Start Cloud SQL Proxy
-    . /workspace/cloud-sql-proxy $INSTANCE_CONNECTION_NAME --port $_CLOUD_SQL_PROXY_PORT & sleep 2
+    /workspace/cloud-sql-proxy $INSTANCE_CONNECTION_NAME --port $_CLOUD_SQL_PROXY_PORT & sleep 2
 
     # Execute sync script
     lpm add mysql --global
