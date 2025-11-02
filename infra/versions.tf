@@ -1,8 +1,5 @@
 terraform {
-  backend "gcs" {
-    bucket = "tsemaye-sandbox-terraform-state"
-    prefix = "sandbox-database/dev"
-  }
+  backend "gcs" {}
 
   required_providers {
     google = {

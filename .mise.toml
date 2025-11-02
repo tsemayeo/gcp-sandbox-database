@@ -1,0 +1,7 @@
+[env]
+
+## GENERIC ENVIRONMENT
+ENVIRONMENT = "dev"
+PROJECT_ID = "tsemaye-sandbox"
+PROJECT_NAME = "sandbox-database"
+REGION = "us-east1"

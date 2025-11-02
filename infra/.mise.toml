@@ -1,11 +1,5 @@
 [env]
 
-## GENERIC ENVIRONMENT
-ENVIRONMENT = "dev"
-PROJECT_ID = "tsemaye-sandbox"
-PROJECT_NAME = "sandbox-database"
-REGION = "us-east1"
-
 ## TERRAFORM BACKEND
 TF_CLI_INIT_BACKEND_CONFIG_BUCKET = "{{ env.PROJECT_ID }}-terraform-state"
 TF_CLI_INIT_BACKEND_CONFIG_KEY = "{{ env.PROJECT_NAME }}/{{ env.ENVIRONMENT }}"

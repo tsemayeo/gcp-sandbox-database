@@ -1,0 +1,8 @@
+[env]
+_PROJECT_NAME = "{{ env.PROJECT_NAME }}"
+_ENVIRONMENT = "{{ env.ENVIRONMENT }}"
+
+[tools]
+gcloud = "latest"
+jq = "latest"
+liquibase = "latest"
