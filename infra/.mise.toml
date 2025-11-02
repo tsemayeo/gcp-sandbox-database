@@ -1,9 +1,7 @@
 [env]
 
 ## TERRAFORM BACKEND
-TF_CLI_INIT_BACKEND_CONFIG_BUCKET = "{{ env.PROJECT_ID }}-terraform-state"
-TF_CLI_INIT_BACKEND_CONFIG_KEY = "{{ env.PROJECT_NAME }}/{{ env.ENVIRONMENT }}"
-TF_CLI_INIT_BACKEND_CONFIG_REGION = "{{ env.REGION }}"
+TF_CLI_ARGS_init="-backend-config='bucket={{ env.PROJECT_ID }}-terraform-state' -backend-config='prefix={{ env.PROJECT_NAME }}/{{ env.ENVIRONMENT }}'"
 
 # TERRAFORM INPUTS
 TF_VAR_environment = "{{ env.ENVIRONMENT }}"
