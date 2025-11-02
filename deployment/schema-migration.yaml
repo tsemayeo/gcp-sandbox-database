@@ -25,7 +25,7 @@ steps:
 
     # Write Liquibase env vars to bash profile
     echo "export INSTANCE_CONNECTION_NAME=$(jq -r '.instanceConnectionName' /workspace/env/parameters.json)" > /workspace/env/liquibase_env.sh
-    echo "export LIQUIBASE_COMMAND_URL=jdbc:mysql://127.0.0.1:$_CLOUD_SQL_PROXY_PORT/$(jq -r '.defaultSchema' /workspace/env/parameters.json)?allowPublicKeyRetrieval=true&useSSL=false" >> /workspace/env/liquibase_env.sh
+    echo "export LIQUIBASE_COMMAND_URL=\"jdbc:mysql://127.0.0.1:$_CLOUD_SQL_PROXY_PORT/$(jq -r '.defaultSchema' /workspace/env/parameters.json)?allowPublicKeyRetrieval=true&useSSL=false\"" >> /workspace/env/liquibase_env.sh
     echo "export LIQUIBASE_COMMAND_DEFAULT_SCHEMA_NAME=$(jq -r '.defaultSchema' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
     echo "export LIQUIBASE_COMMAND_USERNAME=$(jq -r '.liquibaseUsername' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
     echo "export LIQUIBASE_COMMAND_PASSWORD=$(jq -r '.liquibasePassword' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
