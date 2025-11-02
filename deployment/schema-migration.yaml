@@ -46,6 +46,7 @@ steps:
 
     # Execute sync script
     lpm add mysql --global
+    echo $LIQUIBASE_COMMAND_URL
     liquibase --changeLogFile=src/main/changelogs/00-changelog-root.yaml status
   automapSubstitutions: true
 
