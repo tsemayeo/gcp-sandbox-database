@@ -1,4 +1,13 @@
 steps:
+- id: setup-install-cloud-sql-proxy
+  name: gcr.io/cloud-builders/wget
+  entrypoint: sh
+  args:
+    - -c
+    - |
+      wget -O ./workspace/cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/2.19.0
+      chmod +x ./workspace/cloud-sql-proxy
+
 - name: 'gcr.io/cloud-builders/gcloud'
   id: 'setup-get-parameters-base64'
   script: |
@@ -16,13 +25,14 @@ steps:
     echo $(cat /workspace/env/parameters.json)
 
     # Write Liquibase env vars to bash profile
-    echo "export LIQUIBASE_COMMAND_URL=$(jq -r '.host' /workspace/env/parameters.json)" > /workspace/env/liquibase_env.sh
+    echo "export INSTANCE_CONNECTION_NAME=$(jq -r '.instanceConnectionName' /workspace/env/parameters.json)" > /workspace/env/liquibase_env.sh
+    echo "export LIQUIBASE_COMMAND_URL=$(jq -r '"jdbc:mysql://127.0.0.1:$_CLOUD_SQL_PROXY_PORT/" + .defaultSchema' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
     echo "export LIQUIBASE_COMMAND_DEFAULT_SCHEMA_NAME=$(jq -r '.defaultSchema' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
     echo "export LIQUIBASE_COMMAND_USERNAME=$(jq -r '.liquibaseUsername' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
     echo "export LIQUIBASE_COMMAND_PASSWORD=$(jq -r '.liquibasePassword' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
     echo "export LIQUIBASE_LIQUIBASE_SCHEMA_NAME=$(jq -r '.liquibaseSchema' /workspace/env/parameters.json)" >> /workspace/env/liquibase_env.sh
+  automapSubstitutions: true
     
-
 - name: 'liquibase/liquibase:5.0'
   id: 'run-schema-migration'
   script: |
@@ -32,12 +42,17 @@ steps:
     . /workspace/env/liquibase_env.sh
     set +a
 
+    # Start Cloud SQL Proxy
+    . /workspace/cloud-sql-proxy $INSTANCE_CONNECTION_NAME --port $_CLOUD_SQL_PROXY_PORT & sleep 2
+
     # Execute sync script
     lpm add mysql --global
     liquibase --changeLogFile=src/main/changelogs/00-changelog-root.yaml status
+  automapSubstitutions: true
 
 substitutions:
   _PROJECT_NAME: sandbox-database # default value
   _ENVIRONMENT: dev # default value
+  _CLOUD_SQL_PROXY_PORT: "3306" # default value
 options:
   logging: CLOUD_LOGGING_ONLY

@@ -99,7 +99,7 @@ resource "google_parameter_manager_parameter_version" "db_params_version" {
       "liquibaseSchema" : var.liquibase_schema
       "privateIP": google_sql_database_instance.db_master_instance.private_ip_address
       "publicIP": google_sql_database_instance.db_master_instance.public_ip_address
-      "host" : "jdbc:mysql://${google_sql_database_instance.db_master_instance.public_ip_address}:${local.port}/${var.default_schema}"
+      "instanceConnectionName" : google_sql_database_instance.db_master_instance.connection_name
       "port" : local.port
     },
     {
