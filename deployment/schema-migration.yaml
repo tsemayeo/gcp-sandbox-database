@@ -5,8 +5,8 @@ steps:
   args:
     - -c
     - |
-      wget -O ./workspace/cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/2.19.0
-      chmod +x ./workspace/cloud-sql-proxy
+      wget -O /workspace/cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/2.19.0
+      chmod +x /workspace/cloud-sql-proxy
 
 - name: 'gcr.io/cloud-builders/gcloud'
   id: 'setup-get-parameters-base64'

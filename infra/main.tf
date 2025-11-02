@@ -1,5 +1,5 @@
 locals {
-  port           = 3306
+  port = 3306
   users = {
     admin = {
       name = "admin"
@@ -97,8 +97,8 @@ resource "google_parameter_manager_parameter_version" "db_params_version" {
       "rootPassword" : random_password.root_password.result
       "defaultSchema" : var.default_schema
       "liquibaseSchema" : var.liquibase_schema
-      "privateIP": google_sql_database_instance.db_master_instance.private_ip_address
-      "publicIP": google_sql_database_instance.db_master_instance.public_ip_address
+      "privateIP" : google_sql_database_instance.db_master_instance.private_ip_address
+      "publicIP" : google_sql_database_instance.db_master_instance.public_ip_address
       "instanceConnectionName" : google_sql_database_instance.db_master_instance.connection_name
       "port" : local.port
     },
