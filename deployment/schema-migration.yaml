@@ -16,11 +16,7 @@ steps:
     - 'LIQUIBASE_COMMAND_URL=jdbc:mysql://127.0.0.1:3306/?useSSL=false&allowPublicKeyRetrieval=true'
   script: |
     cd /workspace/code
-    # Export Liquibase environment variables
-    set -a
-    . /workspace/env/liquibase_env.sh
-    set +a
-
+    
     # Start Cloud SQL Proxy
     /workspace/cloud-sql-proxy $INSTANCE_CONNECTION_NAME --port $CLOUD_SQL_PROXY_PORT & sleep 2
 
